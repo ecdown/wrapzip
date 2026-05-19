@@ -45,11 +45,17 @@ def pack(args):
     email_mb += len(wrapped.splitlines()) / (1024 * 1024)  # newlines
     email_mb += 2 / (1024 * 1024)  # script overhead approx
 
+    def fmt_size(mb: float) -> str:
+        if mb < 0.01:
+            kb = mb * 1024
+            return f"{kb:.2f} KB"
+        return f"{mb:.2f} MB"
+
     print(
-        f"Original: {orig_mb:.1f} MB | Compressed: {comp_mb:.1f} MB ({ratio:.0f}%)",
+        f"Original: {fmt_size(orig_mb)} | Compressed: {fmt_size(comp_mb)} ({ratio:.0f}%)",
         file=sys.stderr,
     )
-    print(f"Email payload: ~{email_mb:.1f} MB", file=sys.stderr)
+    print(f"Email payload: ~{fmt_size(email_mb)}", file=sys.stderr)
 
     if len(raw) > WARN_LIMIT:
         print(
